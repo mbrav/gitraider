@@ -1,0 +1,29 @@
+[package]
+name = "git_raider"
+version = "0.0.1"
+descripion = "Mass git repository search, replace and commit tool"
+authors = ["mbrav <mbrav@protonmail.com>"]
+edition = "2021"
+
+[features]
+ref_debug = []
+
+[profile.dev]
+opt-level = 1
+
+# Build optimizations: https://github.com/johnthagen/min-sized-rust
+[profile.release]
+panic = "abort"
+strip = true # Strip symbols from binary
+opt-level = "z" # Optimize for size
+lto = true # Enable link time optimization
+codegen-units = 1 # Maximize size reduction optimizations (takes longer)
+
+[[bin]]
+name = "git-raider"
+path = "src/main.rs"
+
+[dependencies]
+clap = { version = "4", features = ["derive", "env"] }
+git2 = "0.16"
+regex = "1"
