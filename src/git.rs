@@ -14,6 +14,7 @@ pub fn get_branches(repo: &Repository) -> Result<Branches, git2::Error> {
 }
 
 /// Get a branches refname
+#[must_use]
 pub fn get_ref<'a>(branch: &'a Branch) -> &'a str {
     let refname = branch
         .name()
@@ -35,13 +36,17 @@ pub fn checkout_branch(repo: &Repository, branch: &Branch) -> Result<Oid, git2::
 
     match reference {
         // gref is an actual reference like branches or tags
-        Some(gref) => repo.set_head(gref.name().unwrap()),
+        Some(gref) => repo.set_head(gref.name().expect("Error unwrapping refname")),
         // this is a commit, not a reference
         None => repo.set_head_detached(object.id()),
     }
     .expect("    Failed to set HEAD");
 
-    let head = repo.head().unwrap().target().unwrap();
+    let head = repo
+        .head()
+        .expect("Error unwrapping repo head")
+        .target()
+        .expect("Error head target");
     println!("    Success checkout {} {}", refname, &head);
 
     Ok(head)
@@ -58,9 +63,13 @@ pub fn stage_all(repo: &mut Repository) -> Result<(), git2::Error> {
 /// Commit stages changes
 /// TODO: Fix `{ code: -15, klass: 11, message: "failed to create commit: current tip is not the first parent" }'`
 pub fn commit(repo: &mut Repository, msg: &str) -> Result<(), git2::Error> {
-    let signature = repo.signature().unwrap();
-    let oid = repo.index().unwrap().write_tree().unwrap();
-    let tree = repo.find_tree(oid).unwrap();
+    let signature = repo.signature().expect("Error getting repo's signature");
+    let oid = repo
+        .index()
+        .expect("Error unwrapping repo index")
+        .write_tree()
+        .expect("Error unwrapping index tree");
+    let tree = repo.find_tree(oid).expect("Error unwrapping tree");
     repo.commit(Some("HEAD"), &signature, &signature, msg, &tree, &[])?;
     Ok(())
 }

@@ -21,6 +21,7 @@ pub fn are_you_on_linux() {
 }
 
 /// Recursively find directories
+#[must_use]
 pub fn find_dirs(dir: &PathBuf, name: &str, parent: &bool) -> Vec<PathBuf> {
     let mut result = Vec::new();
 
@@ -49,22 +50,30 @@ pub fn find_dirs(dir: &PathBuf, name: &str, parent: &bool) -> Vec<PathBuf> {
 }
 
 /// Recursively find files
+#[must_use]
 pub fn find_files(dir: &str, pattern: &str) -> Vec<PathBuf> {
-    let re = Regex::new(pattern).unwrap();
+    let re = Regex::new(pattern).expect("Error compiling regex");
     let mut found_files = Vec::new();
-    let dir_entries = fs::read_dir(dir).unwrap();
+    let dir_entries = fs::read_dir(dir).expect("Error reading path");
 
     for entry in dir_entries {
-        let entry = entry.unwrap();
+        let entry = entry.expect("Error unwrapping directory entry");
         let path = entry.path();
-        let file_name = path.file_name().unwrap().to_str().unwrap();
+        let file_name = path
+            .file_name()
+            .expect("Error unwrapping file Path")
+            .to_str()
+            .expect("Error converting Path to str");
         if path.is_file() && re.is_match(file_name) {
             // If path is a file and is a match
             // Push to found files
             found_files.push(path.clone());
         } else if path.is_dir() {
             // Otherwise proceed to recursion
-            found_files.append(&mut find_files(path.to_str().unwrap(), pattern));
+            found_files.append(&mut find_files(
+                path.to_str().expect("Error converting Path to str"),
+                pattern,
+            ));
         }
     }
     found_files

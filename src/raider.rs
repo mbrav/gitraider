@@ -31,12 +31,15 @@ impl RepoRaider {
         self.dirs = func::find_dirs(&self.path, name, &false)
             .iter()
             .map(|x| structs::Directory {
-                path: x.to_path_buf(),
+                path: x.clone(),
                 repo: None,
                 pages: Vec::new(),
-                relative_path: x.strip_prefix(&self.path).unwrap().to_path_buf(),
+                relative_path: x
+                    .strip_prefix(&self.path)
+                    .expect("Error prefixing PATH")
+                    .to_path_buf(),
             })
-            .collect()
+            .collect();
     }
 
     /// Searches for directories that are git repositories
@@ -44,17 +47,20 @@ impl RepoRaider {
         self.dirs = func::find_dirs(&self.path, ".git", &false)
             .iter()
             .map(|x| structs::Directory {
-                path: x.to_path_buf(),
+                path: x.clone(),
                 repo: Some(git::get_repo(x).expect("Error getting repo")),
                 pages: Vec::new(),
-                relative_path: x.strip_prefix(&self.path).unwrap().to_path_buf(),
+                relative_path: x
+                    .strip_prefix(&self.path)
+                    .expect("Error prefixing Path")
+                    .to_path_buf(),
             })
-            .collect()
+            .collect();
     }
 
     /// Checks out a branch in all directories that are repos
     pub fn checkout_branch(&mut self, pattern: &str) {
-        let re = Regex::new(pattern).unwrap();
+        let re = Regex::new(pattern).expect("Error compiling regex");
         for dir in &mut self.dirs {
             if let Some(repo) = &dir.repo {
                 println!("Repo {}", &dir.relative_path.display());
@@ -63,7 +69,7 @@ impl RepoRaider {
 
                 // Loop through branches
                 for branch in branches {
-                    let b = branch.unwrap().0;
+                    let b = branch.expect("Error unwrapping branch").0;
                     let refname = git::get_ref(&b);
 
                     // If branch's refname matches regex pattern then checkout
@@ -74,12 +80,12 @@ impl RepoRaider {
                         // If there were more than on match
                         // Output a warning
                         if matches > 1 {
-                            println!("    WARNING: More than one branch matched")
+                            println!("    WARNING: More than one branch matched");
                         }
                     }
                 }
             } else {
-                println!("   WARNING: folder is not a repository")
+                println!("   WARNING: folder is not a repository");
             }
         }
     }
@@ -87,16 +93,20 @@ impl RepoRaider {
     /// Recursively matches for filenames with a specific name and outputs a result vector
     pub fn match_files(&mut self, pattern: &str) {
         for dir in &mut self.dirs {
-            let f: Vec<structs::Page> = func::find_files(dir.path.to_str().unwrap(), pattern)
-                .iter()
-                .map(|x| {
-                    structs::Page {
-                        path: x.to_path_buf(),
-                        matches: Vec::new(),
-                        relative_path: x.strip_prefix(&self.path).unwrap().to_path_buf(), // dir: Rc::new(dir.clone()),
-                    }
-                })
-                .collect();
+            let f: Vec<structs::Page> =
+                func::find_files(dir.path.to_str().expect("Error unwrapping Path"), pattern)
+                    .iter()
+                    .map(|x| {
+                        structs::Page {
+                            path: x.clone(),
+                            matches: Vec::new(),
+                            relative_path: x
+                                .strip_prefix(&self.path)
+                                .expect("Error prefixing Path")
+                                .to_path_buf(), // dir: Rc::new(dir.clone()),
+                        }
+                    })
+                    .collect();
             dir.pages.extend(f);
         }
     }
@@ -104,7 +114,7 @@ impl RepoRaider {
     /// Recursively searches for a all lines matching a pattern in a file
     /// and saves them as a Match
     pub fn match_lines(&mut self, pattern: &str) {
-        let re = Regex::new(pattern).unwrap();
+        let re = Regex::new(pattern).expect("Error compiling regex");
         for dir in &mut self.dirs {
             for page in &mut dir.pages {
                 let file = fs::File::open(&page.path).expect("Error reading file");
@@ -131,7 +141,7 @@ impl RepoRaider {
 
     /// Creates a replace string for Match struct
     pub fn replace(&mut self, select: &str, replace: &str) {
-        let re = Regex::new(select).unwrap();
+        let re = Regex::new(select).expect("Error compiling regex");
         for dir in &mut self.dirs {
             for page in &mut dir.pages {
                 for mat in &mut page.matches {
@@ -210,11 +220,13 @@ impl RepoRaider {
     }
 
     /// Gets all folders
+    #[must_use]
     pub fn get_dirs(&self) -> Vec<PathBuf> {
-        self.dirs.iter().map(|f| f.path.to_path_buf()).collect()
+        self.dirs.iter().map(|f| f.path.clone()).collect()
     }
 
     /// Gets all pages contained in all folders
+    #[must_use]
     pub fn get_pages(&self) -> Vec<structs::Page> {
         self.dirs
             .iter()
@@ -223,6 +235,7 @@ impl RepoRaider {
     }
 
     /// Gets all matches in pages
+    #[must_use]
     pub fn get_matches(&self) -> Vec<structs::Match> {
         self.dirs
             .iter()
