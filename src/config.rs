@@ -28,11 +28,11 @@ pub struct Config {
     #[arg(short = 'f', long = "file", value_name = "REGEX", env = "FILE_PATTERN")]
     pub file_pattern: Option<String>,
 
-    /// Specify Regex patterns for selecting lines
+    /// Specify Regex pattern for selecting lines
     #[arg(short = 'l', long = "line", value_name = "REGEX", env = "LINE_PATTERN")]
     pub line_pattern: Option<String>,
 
-    /// Specify Regex select patterns for selecting parts of a line
+    /// Specify Regex pattern for selecting parts of a line
     #[arg(
         short = 's',
         long = "select",
@@ -41,7 +41,7 @@ pub struct Config {
     )]
     pub line_select_pattern: Option<String>,
 
-    /// Specify Replace pattern patterns in files
+    /// Specify Regex pattern for replacing lines selected by --select
     #[arg(
         short = 'r',
         long = "replace",
