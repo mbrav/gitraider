@@ -1,11 +1,15 @@
-# git_raider
-Mass git repository search, replace and commit tool written in Rust
+[![Release](https://github.com/mbrav/git_raider/actions/workflows/release.yml/badge.svg)](https://github.com/mbrav/git_raider/actions/workflows/release.yml)
+[![License](https://img.shields.io/badge/License-BSD_3--Clause-yellow.svg)](https://opensource.org/licenses/BSD-3-Clause)
+[![tokei](https://tokei.rs/b1/github/mbrav/git_raider?category=lines)](https://tokei.rs/b1/github/mbrav/git_raider)
 
+
+# git_raider
+
+Mass git repository search, replace and commit tool written in Rust
 
 *Description to be added soon*
 
-
-## Run 
+## Run
 
 To run, first install Rust's tool chain. Then build:
 
@@ -15,7 +19,7 @@ cargo run -- --help
 
 You will get the following result:
 
-```
+```text
 Mass git repository search, replace and commit tool
 
 Usage: git-raider [OPTIONS]
