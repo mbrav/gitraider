@@ -1,6 +1,6 @@
 [package]
 name = "git_raider"
-version = "0.0.2"
+version = "0.0.3"
 descripion = "Mass git repository search, replace and commit tool"
 authors = ["mbrav <mbrav@protonmail.com>"]
 edition = "2021"

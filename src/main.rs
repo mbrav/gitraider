@@ -43,11 +43,11 @@ fn main() {
 
         // Stage matches
         raider.stage();
-    }
 
-    // Commit changes with message
-    if let Some(commit_message) = conf.commit_message {
-        raider.commit(commit_message.as_str());
+        // Commit changes with message
+        if let Some(commit_message) = conf.commit_message {
+            raider.commit(commit_message.as_str());
+        }
     }
 
     // Print results for found directories, Pages and matches

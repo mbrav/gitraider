@@ -90,28 +90,26 @@ impl RepoRaider {
         }
     }
 
-    /// Recursively matches for filenames with a specific name and outputs a result vector
+    /// Recursively matches for filenames with a specific name and generates a result vector
     pub fn match_files(&mut self, pattern: &str) {
         for dir in &mut self.dirs {
             let f: Vec<structs::Page> =
                 func::find_files(dir.path.to_str().expect("Error unwrapping Path"), pattern)
                     .iter()
-                    .map(|x| {
-                        structs::Page {
-                            path: x.clone(),
-                            matches: Vec::new(),
-                            relative_path: x
-                                .strip_prefix(&self.path)
-                                .expect("Error prefixing Path")
-                                .to_path_buf(), // dir: Rc::new(dir.clone()),
-                        }
+                    .map(|x| structs::Page {
+                        path: x.clone(),
+                        matches: Vec::new(),
+                        relative_path: x
+                            .strip_prefix(&self.path)
+                            .expect("Error prefixing Path")
+                            .to_path_buf(),
                     })
                     .collect();
             dir.pages.extend(f);
         }
     }
 
-    /// Recursively searches for a all lines matching a pattern in a file
+    /// Recursively searches for all lines matching a pattern in a file
     /// and saves them as a Match
     pub fn match_lines(&mut self, pattern: &str) {
         let re = Regex::new(pattern).expect("Error compiling regex");
