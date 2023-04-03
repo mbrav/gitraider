@@ -47,6 +47,10 @@ fn main() {
         // Commit changes with message
         if let Some(commit_message) = conf.commit_message {
             raider.commit(commit_message.as_str());
+
+            if conf.push {
+                !todo!();
+            }
         }
     }
 
