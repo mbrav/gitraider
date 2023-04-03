@@ -60,16 +60,20 @@ pub fn stage_all(repo: &mut Repository) -> Result<(), git2::Error> {
     Ok(())
 }
 
-/// Commit stages changes
-/// TODO: Fix `{ code: -15, klass: 11, message: "failed to create commit: current tip is not the first parent" }'`
+/// Commit staged changes
 pub fn commit(repo: &mut Repository, msg: &str) -> Result<(), git2::Error> {
-    let signature = repo.signature().expect("Error getting repo's signature");
-    let oid = repo
-        .index()
-        .expect("Error unwrapping repo index")
-        .write_tree()
-        .expect("Error unwrapping index tree");
+    let mut index = repo.index().expect("Error unwrapping repo index");
+    let oid = index.write_tree().expect("Error unwrapping index tree");
+    let signature = repo.signature().expect("Error getting user's signature");
+    let parent_commit = repo.head().unwrap().peel_to_commit().unwrap();
     let tree = repo.find_tree(oid).expect("Error unwrapping tree");
-    repo.commit(Some("HEAD"), &signature, &signature, msg, &tree, &[])?;
+    repo.commit(
+        Some("HEAD"),
+        &signature,
+        &signature,
+        msg,
+        &tree,
+        &[&parent_commit],
+    )?;
     Ok(())
 }

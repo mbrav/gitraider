@@ -16,12 +16,27 @@ This cli tool is designed to **recursively** run through a directory (`-p`/`--pa
 * A regex pattern specified with the `-r`/`--replace` flag that will replace content selected with `-s`/`--select` flag;
 * A commit message specified with the `-m`/`--message`. If this flag is not passed, no commit will be made.
 
+## Example
+
+```bash
+cargo run -- \
+  -p "/home/user/git_repos" \
+  -b "development\$" \
+  -f "values.yaml|config.env" \
+  -l "prod-kafka.local:9092" \
+  -s "prod-kafka" \
+  -r "dev-kafka" \
+  -m "Change Apache Kafka server url from 'prod-kafka' to 'dev-kafka'" \
+  -d
+```
+
 ### TODO
 
 For base functionality to be completed, the following must still be finished:
 
-* Create new commit with specified message;
-* Make `dry-run` much better;
+* ~~Create new commit with specified message~~;
+* Push changes to remote after successful commit;
+* Make `dry-run` mode more functional.
 
 ## Run
 
@@ -31,7 +46,7 @@ To run, first install Rust's tool chain. Then build:
 cargo run -- --help
 ```
 
-You will get the following result:
+You will get the following result showing you a help dialogue:
 
 ```text
 Mass git repository search, replace and commit tool
