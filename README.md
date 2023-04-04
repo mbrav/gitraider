@@ -27,8 +27,10 @@ cargo run -- \
   -s "prod-kafka" \
   -r "dev-kafka" \
   -m "Change Apache Kafka server url from 'prod-kafka' to 'dev-kafka'" \
-  -d
+  --push -d
 ```
+
+In this example, the command will search for all repos that exist in `/home/user/git_repos`, checkout all branches that end with "`development`", search only in `values.yaml` and `config.env` files, find all lines that contain "`prod-kafka.local:9092`", select "`prod-kafka`" in all matched lines and replace it with "`dev-kafka`". Lastly, add commit with `-m` and push with `--push` changes to remote.
 
 ### TODO
 
@@ -60,9 +62,10 @@ Options:
   -l, --line <REGEX>     Specify Regex pattern for selecting lines [env: LINE_PATTERN=]
   -s, --select <REGEX>   Specify Regex pattern for selecting parts of a line [env: LINE_SELECT=]
   -r, --replace <REGEX>  Specify Regex pattern for replacing lines selected by --select [env: LINE_REPLACE=]
-  -m, --message <TXT>    Specify commit message [env: COMMIT_MSG=]
+  -m, --message <TXT>    Specify commit message. No commit if empty [env: COMMIT_MSG=]
+      --push             Specify wether to push commit [env: PUSH_CHANGES=]
+      --dry              Run program in dry mode without altering files and writing to git history [env: DRY_RUN=]
   -d, --display          Display results at the end of program execution [env: DISPLAY_RES=]
-  -y, --dry              Run program in dry mode without altering files and writing to git history [env: DRY_RUN=]
   -h, --help             Print help
   -V, --version          Print version
 ```

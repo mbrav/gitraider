@@ -55,14 +55,14 @@ pub struct Config {
     pub commit_message: Option<String>,
 
     /// Specify wether to push commit
-    #[arg(short = 'p', long = "push", action=ArgAction::SetTrue, env = "PUSH_CHANGES")]
+    #[arg(long = "push", action=ArgAction::SetTrue, env = "PUSH_CHANGES")]
     pub push: bool,
+
+    /// Run program in dry mode without altering files and writing to git history
+    #[arg(long = "dry", action=ArgAction::SetTrue, env = "DRY_RUN")]
+    pub dry_run: bool,
 
     /// Display results at the end of program execution
     #[arg(short = 'd', long = "display", action=ArgAction::SetTrue, env = "DISPLAY_RES")]
     pub display_results: bool,
-
-    /// Run program in dry mode without altering files and writing to git history
-    #[arg(short = 'y', long = "dry", action=ArgAction::SetTrue, env = "DRY_RUN")]
-    pub dry_run: bool,
 }

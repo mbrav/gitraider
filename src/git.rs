@@ -65,7 +65,11 @@ pub fn commit(repo: &mut Repository, msg: &str) -> Result<(), git2::Error> {
     let mut index = repo.index().expect("Error unwrapping repo index");
     let oid = index.write_tree().expect("Error unwrapping index tree");
     let signature = repo.signature().expect("Error getting user's signature");
-    let parent_commit = repo.head().unwrap().peel_to_commit().unwrap();
+    let parent_commit = repo
+        .head()
+        .expect("Error unwrapping repo head")
+        .peel_to_commit()
+        .expect("Error unwrapping repo head commit");
     let tree = repo.find_tree(oid).expect("Error unwrapping tree");
     repo.commit(
         Some("HEAD"),
