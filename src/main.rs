@@ -10,7 +10,7 @@ fn main() {
     let conf = Config::parse();
     let start: Instant = Instant::now();
 
-    let mut raider = RepoRaider::new(conf.path);
+    let mut raider = RepoRaider::new(&conf.path);
 
     raider.find_repos();
     raider.checkout_branch(conf.branch_pattern.as_str());

@@ -18,7 +18,7 @@ pub struct RepoRaider {
 /// Repo Raider Implementation
 impl RepoRaider {
     #[must_use]
-    pub fn new(path: String) -> Self {
+    pub fn new(path: &String) -> Self {
         let abs_path = fs::canonicalize(path).expect("Error generating absolute path");
         Self {
             path: abs_path,
@@ -223,7 +223,7 @@ impl RepoRaider {
         self.dirs.iter().map(|f| f.path.clone()).collect()
     }
 
-    /// Gets all pages contained in all folders
+    /// Gets all matched pages contained in all folders
     #[must_use]
     pub fn get_pages(&self) -> Vec<structs::Page> {
         self.dirs
@@ -232,7 +232,7 @@ impl RepoRaider {
             .collect()
     }
 
-    /// Gets all matches in pages
+    /// Gets all matched lines in pages
     #[must_use]
     pub fn get_matches(&self) -> Vec<structs::Match> {
         self.dirs
@@ -240,5 +240,66 @@ impl RepoRaider {
             .flat_map(|f| f.pages.iter())
             .flat_map(|p| p.matches.iter().cloned())
             .collect()
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn raider_new() {
+        let path = "./".to_string();
+        let raider = RepoRaider::new(&path);
+        assert_ne!(raider.path.to_str().unwrap(), path.as_str());
+    }
+
+    #[test]
+    fn raider_find_dirs() {
+        let path = "./".to_string();
+        let mut raider = RepoRaider::new(&path);
+
+        raider.find_dirs("src");
+        assert_ne!(raider.get_dirs().len(), 0);
+    }
+
+    #[test]
+    fn raider_find_repos() {
+        let path = "../".to_string();
+        let mut raider = RepoRaider::new(&path);
+
+        raider.find_repos();
+        assert_ne!(raider.get_dirs().len(), 0);
+    }
+
+    #[test]
+    fn raider_match_files() {
+        let path = "../".to_string();
+        let mut raider = RepoRaider::new(&path);
+
+        raider.find_repos();
+        raider.match_files("main.rs");
+        assert_ne!(raider.get_pages().len(), 0);
+
+        let pages = raider.get_pages();
+        for page in pages {
+            assert!(page.path.to_string_lossy().contains("main.rs"));
+            assert!(page.relative_path.to_string_lossy().contains("main.rs"));
+        }
+    }
+
+    #[test]
+    fn raider_match_file_contents() {
+        let path = "../".to_string();
+        let mut raider = RepoRaider::new(&path);
+
+        raider.find_repos();
+        raider.match_files("main.rs");
+        raider.match_lines("RepoRaider");
+
+        let mat = raider.get_matches();
+        for m in mat {
+            assert!(m.content.contains("RepoRaider"));
+        }
     }
 }
