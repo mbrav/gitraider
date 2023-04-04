@@ -43,6 +43,7 @@ impl RepoRaider {
     }
 
     /// Searches for directories that are git repositories
+    /// and saves them as a vector of Directory structs
     pub fn find_repos(&mut self) {
         self.dirs = func::find_dirs(&self.path, ".git", &false)
             .iter()
@@ -90,7 +91,8 @@ impl RepoRaider {
         }
     }
 
-    /// Recursively matches for filenames with a specific name and generates a result vector
+    /// Recursively matches for filenames with a specific name
+    /// and saves them as a vector of Page structs
     pub fn match_files(&mut self, pattern: &str) {
         for dir in &mut self.dirs {
             let f: Vec<structs::Page> =
@@ -110,16 +112,23 @@ impl RepoRaider {
     }
 
     /// Recursively searches for all lines matching a pattern in a file
-    /// and saves them as a Match
+    /// and saves them as a vector of Match structs
     pub fn match_lines(&mut self, pattern: &str) {
         let re = Regex::new(pattern).expect("Error compiling regex");
         for dir in &mut self.dirs {
             for page in &mut dir.pages {
                 let file = fs::File::open(&page.path).expect("Error reading file");
+
+                // Create a buffered reader and loop through file's lines
                 let reader = BufReader::new(file);
                 for (line, content) in reader.lines().enumerate() {
                     match content {
+                        // An usually results from non utf-8 encoded files
+                        // i.e. binary files
                         Err(e) => println!("{}. Skipping file {}", e, page.path.display()),
+
+                        // If content is a string and matches Regex,
+                        // then save as a new Match struct
                         Ok(content) => {
                             if re.is_match(content.as_str()) {
                                 let new_match = structs::Match {
@@ -151,7 +160,7 @@ impl RepoRaider {
     }
 
     /// Apply replace pattern to all Match structs
-    /// by the line in a result to a file
+    /// for every Page struct in every Directory struct
     pub fn apply(&mut self) {
         for dir in &mut self.dirs {
             for page in &mut dir.pages {
@@ -218,12 +227,14 @@ impl RepoRaider {
     }
 
     /// Gets all folders
+    /// TODO: Return mutable pointers instead of cloned data
     #[must_use]
     pub fn get_dirs(&self) -> Vec<PathBuf> {
         self.dirs.iter().map(|f| f.path.clone()).collect()
     }
 
     /// Gets all matched pages contained in all folders
+    /// TODO: Return mutable pointers instead of cloned data
     #[must_use]
     pub fn get_pages(&self) -> Vec<structs::Page> {
         self.dirs
@@ -233,6 +244,7 @@ impl RepoRaider {
     }
 
     /// Gets all matched lines in pages
+    /// TODO: Return mutable pointers instead of cloned data
     #[must_use]
     pub fn get_matches(&self) -> Vec<structs::Match> {
         self.dirs
