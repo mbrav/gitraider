@@ -25,5 +25,5 @@ path = "src/main.rs"
 
 [dependencies]
 clap = { version = "4", features = ["derive", "env"] }
-git2 = "0.16"
+git2 = "0.17"
 regex = "1"

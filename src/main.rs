@@ -66,15 +66,15 @@ fn results(raider: &RepoRaider) {
     func::paths_info_print(&raider.get_dirs(), "found directories (repos)", 5);
 
     println!("Found pages:");
-    for p in &raider.get_pages() {
+    raider.get_pages().iter().for_each(|p| {
         println!("M {}: {}", p.matches.len(), p.relative_path.display());
-        for m in &p.matches {
+        p.matches.iter().for_each(|m| {
             println!("  O {:<3} {}", m.line, m.content);
             if let Some(r) = m.replace.as_ref() {
                 println!("  R {:<3} {}", m.line, r);
             } else {
                 println!("  R None");
             }
-        }
-    }
+        });
+    });
 }

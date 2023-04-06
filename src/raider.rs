@@ -62,7 +62,7 @@ impl RepoRaider {
     /// Checks out a branch in all directories that are repos
     pub fn checkout_branch(&mut self, pattern: &str) {
         let re = Regex::new(pattern).expect("Error compiling regex");
-        for dir in &mut self.dirs {
+        self.dirs.iter_mut().for_each(|dir| {
             if let Some(repo) = &dir.repo {
                 println!("Repo {}", &dir.relative_path.display());
                 let branches = git::get_branches(repo).expect("  ERROR unwrapping repo's Branches");
@@ -88,13 +88,13 @@ impl RepoRaider {
             } else {
                 println!("   WARNING: folder is not a repository");
             }
-        }
+        });
     }
 
     /// Recursively matches for filenames with a specific name
     /// and saves them as a vector of Page structs
     pub fn match_files(&mut self, pattern: &str) {
-        for dir in &mut self.dirs {
+        self.dirs.iter_mut().for_each(|dir| {
             let f: Vec<structs::Page> =
                 func::find_files(dir.path.to_str().expect("Error unwrapping Path"), pattern)
                     .iter()
@@ -108,15 +108,16 @@ impl RepoRaider {
                     })
                     .collect();
             dir.pages.extend(f);
-        }
+        });
     }
 
     /// Recursively searches for all lines matching a pattern in a file
     /// and saves them as a vector of Match structs
     pub fn match_lines(&mut self, pattern: &str) {
         let re = Regex::new(pattern).expect("Error compiling regex");
-        for dir in &mut self.dirs {
-            for page in &mut dir.pages {
+        self.dirs.iter_mut().for_each(|dir| {
+            dir.pages.iter_mut().for_each(|page| {
+                // Open File
                 let file = fs::File::open(&page.path).expect("Error reading file");
 
                 // Create a buffered reader and loop through file's lines
@@ -142,28 +143,28 @@ impl RepoRaider {
                         }
                     }
                 }
-            }
-        }
+            });
+        });
     }
 
     /// Creates a replace string for Match struct
     pub fn replace(&mut self, select: &str, replace: &str) {
         let re = Regex::new(select).expect("Error compiling regex");
-        for dir in &mut self.dirs {
-            for page in &mut dir.pages {
-                for mat in &mut page.matches {
+        self.dirs.iter_mut().for_each(|dir| {
+            dir.pages.iter_mut().for_each(|page| {
+                page.matches.iter_mut().for_each(|mat| {
                     let res = re.replace(mat.content.as_str(), replace);
                     mat.replace = Some(res.to_string());
-                }
-            }
-        }
+                });
+            });
+        });
     }
 
     /// Apply replace pattern to all Match structs
     /// for every Page struct in every Directory struct
     pub fn apply(&mut self) {
-        for dir in &mut self.dirs {
-            for page in &mut dir.pages {
+        self.dirs.iter_mut().for_each(|dir| {
+            dir.pages.iter_mut().for_each(|page| {
                 // Open file with buffered reader
                 let mut file =
                     BufReader::new(fs::File::open(&page.path).expect("Error opening file"));
@@ -191,13 +192,13 @@ impl RepoRaider {
 
                 file.write_all(file_contents.as_bytes())
                     .expect("Error writing to file");
-            }
-        }
+            });
+        });
     }
 
     /// Stage all matches  
     pub fn stage(&mut self) {
-        for dir in &mut self.dirs {
+        self.dirs.iter_mut().for_each(|dir| {
             if let Some(repo) = &mut dir.repo {
                 // Stage all changes
                 // TODO: Only stage matched files
@@ -208,12 +209,12 @@ impl RepoRaider {
                     dir.relative_path.display()
                 );
             }
-        }
+        });
     }
 
     /// Commit all matches  
     pub fn commit(&mut self, msg: &str) {
-        for dir in &mut self.dirs {
+        self.dirs.iter_mut().for_each(|dir| {
             if let Some(repo) = &mut dir.repo {
                 // Commit all staged files
                 git::commit(repo, msg).expect("Error committing changes");
@@ -223,7 +224,7 @@ impl RepoRaider {
                     dir.relative_path.display()
                 );
             }
-        }
+        });
     }
 
     /// Gets all folders
@@ -293,11 +294,10 @@ mod tests {
         raider.match_files("main.rs");
         assert_ne!(raider.get_pages().len(), 0);
 
-        let pages = raider.get_pages();
-        for page in pages {
+        raider.get_pages().iter().for_each(|page| {
             assert!(page.path.to_string_lossy().contains("main.rs"));
             assert!(page.relative_path.to_string_lossy().contains("main.rs"));
-        }
+        });
     }
 
     #[test]
@@ -309,9 +309,8 @@ mod tests {
         raider.match_files("main.rs");
         raider.match_lines("RepoRaider");
 
-        let mat = raider.get_matches();
-        for m in mat {
+        raider.get_matches().iter().for_each(|m| {
             assert!(m.content.contains("RepoRaider"));
-        }
+        });
     }
 }
