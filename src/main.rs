@@ -6,7 +6,7 @@ use git_raider::func;
 use git_raider::raider::RepoRaider;
 
 fn main() {
-    func::are_you_on_linux();
+    // func::are_you_on_linux();
     let conf = Config::parse();
     let start: Instant = Instant::now();
 
@@ -63,8 +63,9 @@ fn main() {
 }
 
 fn results(raider: &RepoRaider) {
-    func::paths_info_print(&raider.get_dirs(), "found directories (repos)", 5);
+    // func::paths_info_print(&raider.get_dirs(), "found directories (repos)", 5);
 
+    println!("REPORT");
     println!("Found pages:");
     raider.get_pages().iter().for_each(|p| {
         println!("M {}: {}", p.matches.len(), p.relative_path.display());
