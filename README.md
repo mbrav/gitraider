@@ -53,7 +53,7 @@ You will get the following result showing you a help dialogue:
 ```text
 Mass git repository search, replace and commit tool
 
-Usage: git-raider [OPTIONS]
+Usage: gitraider [OPTIONS]
 
 Options:
   -p, --path <PATH>      Path to repositories [env: REPO_PATH=] [default: ../repos]

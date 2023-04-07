@@ -20,7 +20,7 @@ lto = true # Enable link time optimization
 codegen-units = 1 # Maximize size reduction optimizations (takes longer)
 
 [[bin]]
-name = "git-raider"
+name = "gitraider"
 path = "src/main.rs"
 
 [dependencies]

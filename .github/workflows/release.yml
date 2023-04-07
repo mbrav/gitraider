@@ -35,17 +35,17 @@ jobs:
       - name: Cargo Build Binary
         run: |
           cargo build --release
-          chmod +x target/release/git-raider
+          chmod +x target/release/gitraider
 
       - name: Optimize Binary with UPX
         run: |
-          upx --best --lzma target/release/git-raider
+          upx --best --lzma target/release/gitraider
 
       - name: Package Binary
         run: |
           toolchain=$(rustup toolchain list | awk '{print $1;}')
-          tar_name="git-raider_${{ github.ref_name }}-$toolchain"
-          tar -cvzf target/release/$tar_name.tar.gz target/release/git-raider
+          tar_name="gitraider_${{ github.ref_name }}-$toolchain"
+          tar -cvzf target/release/$tar_name.tar.gz target/release/gitraider
 
       - name: Release
         uses: docker://antonyurchenko/git-release:v5
