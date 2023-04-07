@@ -4,19 +4,9 @@
 
 # git_raider
 
-**⚠️WARNING⚠️** This project is still WIP so please test on repositories that you have a safe copy of.
-
 Mass git repository search, replace and commit tool written in Rust
 
-This cli tool is designed to **recursively** run through a directory (`-p`/`--path` flag) and find the following:
-
-* Folders that contain a *.git* folder (and hence are git repositories);
-* A branch name regex pattern specified with the `-b`/`--branch` flag which checks out a branch that was matched by the regex. A warning will be outputted if more than one branch was matched;
-* A file name regex pattern specified with the `-f`/`--file` flag. This will match all files that match the regex pattern;
-* A regex pattern specified with the `-l`/`--line` flag that will match *a whole* line in a file that was matched by `-f`/`--file`;
-* A regex pattern specified with the `-s`/`--select` flag that can match just *a part* of a line selected with `-l`/`--line`;
-* A regex pattern specified with the `-r`/`--replace` flag that will replace content selected with `-s`/`--select` flag;
-* A commit message specified with the `-m`/`--message`. If this flag is not passed, no commit will be made.
+**⚠️WARNING⚠️** This project is still WIP so please test on repositories that you have a safe copy of.
 
 ## Example
 
@@ -55,7 +45,6 @@ M 4: mbrav/test-repo/values.yaml
   R 4   kafka_bootstrapservers4: test-kafka.backend:9092
 Elapsed: 39.170ms
 ```
-
 
 ### TODO
 
