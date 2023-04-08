@@ -89,7 +89,7 @@ pub fn commit(repo: &mut Repository, msg: &str) -> Result<(), git2::Error> {
 
     // Get new commit
     let new_commit = get_last_commit(repo).expect("Error getting new commit");
-    let new_msg = new_commit.message().unwrap();
+    let new_msg = new_commit.message().expect("Error getting commit message");
     let new_head = new_commit.id();
 
     // Check if commit message matches

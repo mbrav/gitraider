@@ -213,7 +213,10 @@ impl RepoRaider {
 
                 files.into_iter().for_each(|f| {
                     // Get file path relative to repository root
-                    let file_repo_path = f.relative_path.strip_prefix(&dir.relative_path).unwrap();
+                    let file_repo_path = f
+                        .relative_path
+                        .strip_prefix(&dir.relative_path)
+                        .expect("Error stripping Path prefix");
                     let staged = git::stage_file(repo, file_repo_path);
                     match staged {
                         Ok(_) => {
