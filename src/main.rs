@@ -2,7 +2,7 @@ use std::time::Instant;
 
 use clap::Parser;
 use git_raider::config::Config;
-use git_raider::func;
+// use git_raider::func;
 use git_raider::raider::RepoRaider;
 
 fn main() {
@@ -45,7 +45,7 @@ fn main() {
         raider.stage();
 
         // Commit changes with message
-        if let Some(commit_message) = conf.commit_message {
+        if let Some(commit_message) = conf.commit {
             raider.commit(commit_message.as_str());
 
             if conf.push {
@@ -62,11 +62,14 @@ fn main() {
     println!("Elapsed: {:.3?}", start.elapsed());
 }
 
+/// Print results 
 fn results(raider: &RepoRaider) {
     // func::paths_info_print(&raider.get_dirs(), "found directories (repos)", 5);
-
     println!("REPORT");
-    println!("Found pages:");
+    println!("M n - Matched files, number of matched lines");
+    println!("  O n - Original line, line number");
+    println!("  R n - Replaced line, line number");
+    println!("Files:");
     raider.get_pages().iter().for_each(|p| {
         println!("M {}: {}", p.matches.len(), p.relative_path.display());
         p.matches.iter().for_each(|m| {

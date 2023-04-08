@@ -51,8 +51,8 @@ pub struct Config {
     pub line_replace_pattern: Option<String>,
 
     /// Specify commit message. No commit if empty.
-    #[arg(short = 'm', long = "message", value_name = "TXT", env = "COMMIT_MSG")]
-    pub commit_message: Option<String>,
+    #[arg(short = 'c', long = "commit", value_name = "TXT", env = "COMMIT_MSG")]
+    pub commit: Option<String>,
 
     /// Specify wether to push commit
     #[arg(long = "push", action=ArgAction::SetTrue, env = "PUSH_CHANGES")]
