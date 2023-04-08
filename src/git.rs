@@ -1,4 +1,4 @@
-use git2::{Branch, BranchType, Branches, Oid, Repository};
+use git2::{Branch, BranchType, Branches, Commit, Oid, Repository};
 use std::path::PathBuf;
 
 /// Get repo from path
@@ -47,7 +47,7 @@ pub fn checkout_branch(repo: &Repository, branch: &Branch) -> Result<Oid, git2::
         .expect("Error unwrapping repo head")
         .target()
         .expect("Error head target");
-    println!("    Success checkout {} {}", refname, &head);
+    println!("    Success checking out branch '{}' {}", refname, head);
 
     Ok(head)
 }
@@ -62,15 +62,14 @@ pub fn stage_all(repo: &mut Repository) -> Result<(), git2::Error> {
 
 /// Commit staged changes
 pub fn commit(repo: &mut Repository, msg: &str) -> Result<(), git2::Error> {
+    // Gather git objects
     let mut index = repo.index().expect("Error unwrapping repo index");
     let oid = index.write_tree().expect("Error unwrapping index tree");
     let signature = repo.signature().expect("Error getting user's signature");
-    let parent_commit = repo
-        .head()
-        .expect("Error unwrapping repo head")
-        .peel_to_commit()
-        .expect("Error unwrapping repo head commit");
+    let parent_commit = get_last_commit(repo).expect("Error getting last commit");
     let tree = repo.find_tree(oid).expect("Error unwrapping tree");
+
+    // Create new commit
     repo.commit(
         Some("HEAD"),
         &signature,
@@ -79,5 +78,27 @@ pub fn commit(repo: &mut Repository, msg: &str) -> Result<(), git2::Error> {
         &tree,
         &[&parent_commit],
     )?;
+
+    // Get new commit
+    let new_commit = get_last_commit(repo).expect("Error getting new commit");
+    let new_msg = new_commit.message().unwrap();
+    let new_head = new_commit.id();
+
+    // Check if commit message matches
+    if new_msg == msg {
+        println!("    Success commit '{}' {}", new_msg, new_head)
+    } else {
+        println!("    Warning, commit message mismatch '{}'", new_msg)
+    }
+
     Ok(())
+}
+
+/// Get last commit
+fn get_last_commit(repo: &Repository) -> Result<Commit, git2::Error> {
+    let commit = repo
+        .head()
+        .expect("Error unwrapping commit from head")
+        .peel_to_commit()?;
+    Ok(commit)
 }

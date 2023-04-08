@@ -52,7 +52,7 @@ cargo run -- \
   -l "prod-kafka.backend:9092" \
   -s "prod-kafka" \
   -r "dev-kafka" \
-  -c "Change Apache Kafka bootstrap server url from 'prod-kafka' to 'dev-kafka'" \
+  -c "Change bootstrap server url from prod-kafka to dev-kafka" \
   --push -d
 ```
 
@@ -61,21 +61,18 @@ After running the command with the `-d` flag we get the following report:
 ```text
 Repo mbrav/test-repo
   Checking out development
-    Success checkout development 0290ec568bbd541420454e64b5a7dda6a9642554
+    Success checking out branch 'development' 0290ec568bbd541420454e64b5a7dda6a9642554
+    Success commit 'Change bootstrap server url from prod-kafka to dev-kafka' d93cb354791ccb4a540b767c70ea480d4cbd580a
 REPORT                                                                                                              
 M n - Matched files, number of matched lines                                                                           
   O n - Original line, line number                                                                                     
   R n - Replaced line, line number 
 Found pages:
-M 4: mbrav/test-repo/values.yaml
-  O 1   kafka_bootstrapservers1: "prod-kafka.backend:9092"
-  R 1   kafka_bootstrapservers1: "test-kafka.backend:9092"
-  O 2   kafka_bootstrapservers2: prod-kafka.backend:9092
-  R 2   kafka_bootstrapservers2: test-kafka.backend:9092
-  O 3   kafka_bootstrapservers3: "prod-kafka.backend:9092"
-  R 3   kafka_bootstrapservers3: "test-kafka.backend:9092"
-  O 4   kafka_bootstrapservers4: prod-kafka.backend:9092
-  R 4   kafka_bootstrapservers4: test-kafka.backend:9092
+M 2: mbrav/test-repo/values.yaml
+  O 1   kafka_bootstrapservers: "prod-kafka.backend:9092"
+  R 1   kafka_bootstrapservers: "test-kafka.backend:9092"
+  O 4   kafka_url: prod-kafka.backend:9092
+  R 4   kafka_url: test-kafka.backend:9092
 Elapsed: 39.170ms
 ```
 
