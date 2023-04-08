@@ -6,7 +6,7 @@
 
 Mass git repository search, replace and commit tool written in Rust
 
-**⚠️WARNING⚠️** This project is still WIP so please test on repositories that you have a safe copy of.
+**⚠️WARNING⚠️** This tool is designed to make changes to hundreds of git repositories, as well as pushing these changes to remote if `--push` flag is used. This project is still WIP so please test on repositories that you have a safe copy.
 
 ## Run
 
