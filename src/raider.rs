@@ -201,8 +201,29 @@ impl RepoRaider {
         self.dirs.iter_mut().for_each(|dir| {
             if let Some(repo) = &mut dir.repo {
                 // Stage all changes
-                // TODO: Only stage matched files
-                git::stage_all(repo).expect("Error staging all files");
+                // git::stage_all(repo).expect("Error staging all files");
+
+                // Get all files that have at least on Match
+                let files: Vec<structs::Page> = dir
+                    .pages
+                    .clone()
+                    .into_iter()
+                    .filter(|p| !p.matches.is_empty())
+                    .collect();
+
+                files.into_iter().for_each(|f| {
+                    // Get file path relative to repository root
+                    let file_repo_path = f.relative_path.strip_prefix(&dir.relative_path).unwrap();
+                    let staged = git::stage_file(repo, file_repo_path);
+                    match staged {
+                        Ok(_) => {
+                            println!("    Staged '{}'", file_repo_path.display());
+                        }
+                        Err(_) => {
+                            println!("    Error staging '{}'", file_repo_path.display());
+                        }
+                    }
+                });
             } else {
                 println!(
                     "Skipping, {} is not a git repository",

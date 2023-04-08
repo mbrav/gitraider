@@ -62,8 +62,9 @@ After running the command with the `-d` flag we get the following report:
 Repo mbrav/test-repo
   Checking out development
     Success checking out branch 'development' 0290ec568bbd541420454e64b5a7dda6a9642554
+    Staged 'values.yaml'
     Success commit 'Change bootstrap server url from prod-kafka to dev-kafka' d93cb354791ccb4a540b767c70ea480d4cbd580a
-REPORT                                                                                                              
+REPORT                                                                                               
 M n - Matched files, number of matched lines                                                                           
   O n - Original line, line number                                                                                     
   R n - Replaced line, line number 

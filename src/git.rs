@@ -1,5 +1,5 @@
 use git2::{Branch, BranchType, Branches, Commit, Oid, Repository};
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 
 /// Get repo from path
 pub fn get_repo(path: &PathBuf) -> Result<Repository, git2::Error> {
@@ -56,6 +56,14 @@ pub fn checkout_branch(repo: &Repository, branch: &Branch) -> Result<Oid, git2::
 pub fn stage_all(repo: &mut Repository) -> Result<(), git2::Error> {
     let mut index = repo.index()?;
     index.add_all(["*"].iter(), git2::IndexAddOption::DEFAULT, None)?;
+    index.write()?;
+    Ok(())
+}
+
+/// Stage specific files
+pub fn stage_file(repo: &mut Repository, file: &Path) -> Result<(), git2::Error> {
+    let mut index = repo.index()?;
+    index.add_path(file)?;
     index.write()?;
     Ok(())
 }
