@@ -47,7 +47,7 @@ pub fn checkout_branch(repo: &Repository, branch: &Branch) -> Result<Oid, git2::
         .expect("Error unwrapping repo head")
         .target()
         .expect("Error head target");
-    println!("    Success checking out branch '{}' {}", refname, head);
+    println!("  Success branch checkout '{}' {}", refname, head);
 
     Ok(head)
 }

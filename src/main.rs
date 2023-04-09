@@ -2,11 +2,9 @@ use std::time::Instant;
 
 use clap::Parser;
 use git_raider::config::Config;
-// use git_raider::func;
 use git_raider::raider::RepoRaider;
 
 fn main() {
-    // func::are_you_on_linux();
     let conf = Config::parse();
     let start: Instant = Instant::now();
 
@@ -62,23 +60,26 @@ fn main() {
     println!("Elapsed: {:.3?}", start.elapsed());
 }
 
-/// Print results 
+/// Print results
 fn results(raider: &RepoRaider) {
-    // func::paths_info_print(&raider.get_dirs(), "found directories (repos)", 5);
+    // git_raider::func::paths_info_print(&raider.get_dirs(), "found directories (repos)", 5);
     println!("REPORT");
     println!("M n - Matched files, number of matched lines");
     println!("  O n - Original line, line number");
     println!("  R n - Replaced line, line number");
-    println!("Files:");
+    println!("FILES:");
     raider.get_pages().iter().for_each(|p| {
         println!("M {}: {}", p.matches.len(), p.relative_path.display());
-        p.matches.iter().for_each(|m| {
-            println!("  O {:<3} {}", m.line, m.content);
-            if let Some(r) = m.replace.as_ref() {
-                println!("  R {:<3} {}", m.line, r);
-            } else {
-                println!("  R None");
-            }
-        });
+        p.matches
+            .iter()
+            .filter(|m| m.replace.is_some())
+            .for_each(|m| {
+                println!("  O {:<3} {}", m.line, m.content);
+                if let Some(r) = m.replace.as_ref() {
+                    println!("  R {:<3} {}", m.line, r);
+                } else {
+                    println!("  R None");
+                }
+            });
     });
 }

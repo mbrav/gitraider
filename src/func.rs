@@ -2,24 +2,6 @@ use regex::Regex;
 use std::fs;
 use std::path::PathBuf;
 
-#[cfg(target_os = "linux")]
-pub fn are_you_on_linux() {
-    println!("You are running linux!");
-    if cfg!(target_os = "linux") {
-        println!("Yes. It's definitely linux!");
-    } else {
-        println!("Yes. It's definitely *not* linux!");
-    }
-}
-
-// And this function only gets compiled if the target OS is *not* linux
-#[cfg(not(target_os = "linux"))]
-pub fn are_you_on_linux() {
-    println!("You are not using Linux. Do you seriously call yourself a developer?");
-    println!("Do yourself a favor and install Linux");
-    println!("I use arch btw");
-}
-
 /// Recursively find directories
 #[must_use]
 pub fn find_dirs(dir: &PathBuf, name: &str, parent: &bool) -> Vec<PathBuf> {
@@ -79,6 +61,7 @@ pub fn find_files(dir: &str, pattern: &str) -> Vec<PathBuf> {
     found_files
 }
 
+/// Prints info about paths
 pub fn paths_info_print(list: &Vec<PathBuf>, msg: &str, elements: usize) {
     println!("First {} ({}) {}:", elements, list.len(), msg);
     for f in 0..elements {

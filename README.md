@@ -8,7 +8,26 @@ Mass git repository search, replace and commit tool written in Rust
 
 **⚠️WARNING⚠️** This tool is designed to make changes to hundreds of git repositories, as well as pushing these changes to remote if `--push` flag is used. This project is still WIP so please test on repositories that you have a safe copy.
 
-## Run
+## Install binary on Linux
+
+To install the latest version of the binary to `/usr/local/bin/` copy the following into your terminal:
+
+```bash
+latest_ver=$(curl https://raw.githubusercontent.com/mbrav/git_raider/main/latest)
+file_name=gitraider_$latest_ver-stable-x86_64-unknown-linux-gnu.tar.gz
+curl -L -o /tmp/$file_name https://github.com/mbrav/git_raider/releases/download/$latest_ver/$file_name
+tar -xvf /tmp/$file_name -C /tmp/
+sudo cp /tmp/target/release/gitraider /usr/local/bin/
+gitraider -V 
+```
+
+If successful, you will get the following after the end:
+
+```text
+git_raider 0.1.4
+```
+
+## Run from source
 
 To run, first install Rust's tool chain. Then build:
 
@@ -82,5 +101,8 @@ Elapsed: 39.170ms
 For base functionality to be completed, the following must still be finished:
 
 - [x] ~~Create new commit with specified message~~;
+- [x] ~~Add more elaborate commit changes checks to avoid making duplicate changes and commits~~;
 - [ ] Push changes to remote after successful commit;
+- [ ] Add undo mechanics based on already done changes to avoid deleting and recreating all repositories after each unsuccessful run;
+- [ ] Add optional pull from remote before a commit to branch
 - [ ] Make `dry-run` mode more functional.

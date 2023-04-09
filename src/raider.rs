@@ -154,7 +154,13 @@ impl RepoRaider {
             dir.pages.iter_mut().for_each(|page| {
                 page.matches.iter_mut().for_each(|mat| {
                     let res = re.replace(mat.content.as_str(), replace);
-                    mat.replace = Some(res.to_string());
+                    let replace_string = res.to_string();
+
+                    // Create a replace string only if replaced string does not match line content
+                    if replace_string != mat.content {
+                        mat.replace = Some(replace_string);
+                        println!("    Replaced '{}'", mat.replace.as_ref().unwrap())
+                    }
                 });
             });
         });
@@ -211,19 +217,25 @@ impl RepoRaider {
                     .filter(|p| !p.matches.is_empty())
                     .collect();
 
-                files.into_iter().for_each(|f| {
-                    // Get file path relative to repository root
-                    let file_repo_path = f
-                        .relative_path
-                        .strip_prefix(&dir.relative_path)
-                        .expect("Error stripping Path prefix");
-                    let staged = git::stage_file(repo, file_repo_path);
-                    match staged {
-                        Ok(_) => {
-                            println!("    Staged '{}'", file_repo_path.display());
-                        }
-                        Err(_) => {
-                            println!("    Error staging '{}'", file_repo_path.display());
+                files.into_iter().for_each(|p| {
+                    // Check if file has at least on replace pattern
+                    if p.matches.into_iter().any(|m| m.replace.is_some()) {
+                        println!(
+                            "    File {} has replace patterns",
+                            p.relative_path.display()
+                        );
+                        // Get file path relative to repository root
+                        let file_repo_path = p
+                            .relative_path
+                            .strip_prefix(&dir.relative_path)
+                            .expect("Error stripping Path prefix");
+                        match git::stage_file(repo, file_repo_path) {
+                            Ok(_) => {
+                                println!("    Staged '{}'", file_repo_path.display());
+                            }
+                            Err(_) => {
+                                println!("    Error staging '{}'", file_repo_path.display());
+                            }
                         }
                     }
                 });
@@ -240,8 +252,18 @@ impl RepoRaider {
     pub fn commit(&mut self, msg: &str) {
         self.dirs.iter_mut().for_each(|dir| {
             if let Some(repo) = &mut dir.repo {
-                // Commit all staged files
-                git::commit(repo, msg).expect("Error committing changes");
+                // Check if there are is at least one Match to commit
+                let do_commit = dir
+                    .pages
+                    .iter()
+                    .flat_map(|p| p.matches.iter())
+                    .any(|m| m.replace.is_some());
+                // If page has at least on Match that was has Some replace string, commit file
+                if do_commit {
+                    git::commit(repo, msg).expect("Error committing changes");
+                } else {
+                    println!("    No changes to commit")
+                }
             } else {
                 println!(
                     "Skipping {} not a git repository",
