@@ -8,27 +8,29 @@ fn main() {
     let conf = Config::parse();
     let start: Instant = Instant::now();
 
+    // Recursively find directories that are git repositories
     let mut raider = RepoRaider::new(&conf.path);
-
     raider.find_repos();
+
+    // Check out branch that matches regex pattern 
     raider.checkout_branch(conf.branch_pattern.as_str());
 
-    // Match files
+    // Match files with regex pattern
     if let Some(file_pattern) = conf.file_pattern {
         raider.match_files(file_pattern.as_str());
     }
 
-    // Match lines in files
+    // Match lines in files that match regex pattern
     if let Some(content_pattern) = conf.line_pattern {
         raider.match_lines(content_pattern.as_str());
     }
 
-    // Generate replace patterns for each pattern
+    // Create replace patterns for each pattern
     if let Some(line_select_pattern) = conf.line_select_pattern {
         if let Some(line_replace_pattern) = conf.line_replace_pattern {
             raider.replace(line_select_pattern.as_str(), line_replace_pattern.as_str());
         } else {
-            panic!("Replace file pattern required for line select pattern");
+            panic!("Replace file pattern required for line select");
         }
     }
 
