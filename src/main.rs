@@ -46,8 +46,9 @@ fn main() {
         if let Some(commit_message) = conf.commit {
             raider.commit(commit_message.as_str());
 
+            // If push flag is set, push to remote
             if conf.push {
-                !todo!();
+                raider.push();
             }
         }
     }

@@ -1,4 +1,4 @@
-use git2::{Branch, BranchType, Branches, Commit, Oid, Repository};
+use git2::{Branch, BranchType, Branches, Commit, Oid, PushOptions, RemoteCallbacks, Repository};
 use std::path::{Path, PathBuf};
 
 /// Get repo from path
@@ -98,6 +98,22 @@ pub fn commit(repo: &mut Repository, msg: &str) -> Result<(), git2::Error> {
     } else {
         println!("    Warning, commit message mismatch '{}'", new_msg)
     }
+
+    Ok(())
+}
+
+/// Push changes to remote
+pub fn push(repo: &Repository) -> Result<(), git2::Error> {
+    // Setup remote
+    let mut opts = PushOptions::default();
+    let callbacks = RemoteCallbacks::new();
+    opts.remote_callbacks(callbacks);
+
+    // Assume the remote's name is "origin"
+    let mut remote = repo.find_remote("origin")?;
+
+    // Push to remote
+    remote.push::<&str>(&[], Some(&mut opts))?;
 
     Ok(())
 }

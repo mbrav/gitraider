@@ -273,6 +273,15 @@ impl RepoRaider {
         });
     }
 
+    /// Push changes to remote
+    pub fn push(&self) {
+        self.dirs.iter().for_each(|dir| {
+            println!("Pushing {} to remote", dir.relative_path.display());
+            let repo = dir.repo.as_ref().unwrap();
+            git::push(repo).expect("Error pushing repository");
+        });
+    }
+
     /// Gets all folders
     /// TODO: Return mutable pointers instead of cloned data
     #[must_use]
