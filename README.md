@@ -103,6 +103,9 @@ For base functionality to be completed, the following must still be finished:
 - [x] ~~Create new commit with specified message~~;
 - [x] ~~Add more elaborate commit changes checks to avoid making duplicate changes and commits~~;
 - [x] ~~Make `dry-run` mode more functional.~~
-- [ ] Push changes to remote after successful commit;
+- [ ] Push changes to remote after successful commit. Because liggit2, the underlying C library that git2 Rust library offers bindings to, does not support parsing `~/.ssh/` configs, coming up with a workaround is still WIP. Relevant issues:
+  - rust-lang/git2-rs#362
+  - libgit2/libgit2#5640
+  - libgit2/libgit2#4338
 - [ ] Add undo mechanics based on already done changes to avoid deleting and recreating all repositories after each unsuccessful run;
 - [ ] Add optional pull from remote before a commit to branch;
