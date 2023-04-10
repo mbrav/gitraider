@@ -9,10 +9,10 @@ fn main() {
     let start: Instant = Instant::now();
 
     // Recursively find directories that are git repositories
-    let mut raider = RepoRaider::new(&conf.path);
+    let mut raider = RepoRaider::new(conf.path, conf.dry_run);
     raider.find_repos();
 
-    // Check out branch that matches regex pattern 
+    // Check out branch that matches regex pattern
     raider.checkout_branch(conf.branch_pattern.as_str());
 
     // Match files with regex pattern
@@ -30,28 +30,23 @@ fn main() {
         if let Some(line_replace_pattern) = conf.line_replace_pattern {
             raider.replace(line_select_pattern.as_str(), line_replace_pattern.as_str());
         } else {
-            panic!("Replace file pattern required for line select");
+            println!("WARNING: No replace flag specified");
         }
     }
 
-    // If dry run is not set
-    // Do not alter files and stage changes
-    // TODO: Make dry run simulate altering files and staging changes
-    if !conf.dry_run {
-        // Apply replace patterns
-        raider.apply();
+    // Apply replace patterns
+    raider.apply();
 
-        // Stage matches
-        raider.stage();
+    // Stage matches
+    raider.stage();
 
-        // Commit changes with message
-        if let Some(commit_message) = conf.commit {
-            raider.commit(commit_message.as_str());
+    // Commit changes with message
+    if let Some(commit_message) = conf.commit {
+        raider.commit(commit_message.as_str());
 
-            // If push flag is set, push to remote
-            if conf.push {
-                raider.push();
-            }
+        // If push flag is set, push to remote
+        if conf.push {
+            raider.push();
         }
     }
 
