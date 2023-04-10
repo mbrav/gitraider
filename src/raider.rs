@@ -344,14 +344,14 @@ mod tests {
     #[test]
     fn raider_new() {
         let path = "./".to_string();
-        let raider = RepoRaider::new(&path);
+        let raider = RepoRaider::new(path.clone(), false);
         assert_ne!(raider.path.to_str().unwrap(), path.as_str());
     }
 
     #[test]
     fn raider_find_dirs() {
         let path = "./".to_string();
-        let mut raider = RepoRaider::new(&path);
+        let mut raider = RepoRaider::new(path, false);
 
         raider.find_dirs("src");
         assert_ne!(raider.get_dirs().len(), 0);
@@ -360,7 +360,7 @@ mod tests {
     #[test]
     fn raider_find_repos() {
         let path = "../".to_string();
-        let mut raider = RepoRaider::new(&path);
+        let mut raider = RepoRaider::new(path, false);
 
         raider.find_repos();
         assert_ne!(raider.get_dirs().len(), 0);
@@ -369,7 +369,7 @@ mod tests {
     #[test]
     fn raider_match_files() {
         let path = "../".to_string();
-        let mut raider = RepoRaider::new(&path);
+        let mut raider = RepoRaider::new(path, false);
 
         raider.find_repos();
         raider.match_files("main.rs");
@@ -384,7 +384,7 @@ mod tests {
     #[test]
     fn raider_match_file_contents() {
         let path = "../".to_string();
-        let mut raider = RepoRaider::new(&path);
+        let mut raider = RepoRaider::new(path, false);
 
         raider.find_repos();
         raider.match_files("main.rs");
