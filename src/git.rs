@@ -47,7 +47,7 @@ pub fn checkout_branch(repo: &Repository, branch: &Branch) -> Result<Oid, git2::
         .expect("Error unwrapping repo head")
         .target()
         .expect("Error head target");
-    println!("  Success branch checkout '{}' {}", refname, head);
+    println!("  Success branch checkout '{refname}' {head}");
 
     Ok(head)
 }
@@ -94,9 +94,9 @@ pub fn commit(repo: &mut Repository, msg: &str) -> Result<(), git2::Error> {
 
     // Check if commit message matches
     if new_msg == msg {
-        println!("    Success commit '{}' {}", new_msg, new_head)
+        println!("    Success commit '{new_msg}' {new_head}");
     } else {
-        println!("    Warning, commit message mismatch '{}'", new_msg)
+        println!("    Warning, commit message mismatch '{new_msg}'");
     }
 
     Ok(())

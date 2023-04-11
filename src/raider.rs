@@ -163,7 +163,13 @@ impl RepoRaider {
                     if replace_string != mat.content {
                         mat.replace = Some(replace_string);
                         println!("  O {:<3} {}", mat.line, mat.content);
-                        println!("  R {:<3} {}", mat.line, mat.replace.as_ref().unwrap());
+                        println!(
+                            "  R {:<3} {}",
+                            mat.line,
+                            mat.replace
+                                .as_ref()
+                                .expect("Error unwrapping replace reference")
+                        );
                     }
                 });
             });
@@ -196,7 +202,9 @@ impl RepoRaider {
                     }
 
                     // Check if in dry run mode
-                    if !self.dry_run {
+                    if self.dry_run {
+                        println!("Would have written to {}", page.path.display());
+                    } else {
                         // Open file with buffered writer
                         let mut file = BufWriter::new(
                             fs::OpenOptions::new()
@@ -208,8 +216,6 @@ impl RepoRaider {
 
                         file.write_all(file_contents.as_bytes())
                             .expect("Error writing to file");
-                    } else {
-                        println!("Would have written to {}", page.path.display());
                     }
                 });
         });
@@ -223,37 +229,34 @@ impl RepoRaider {
                 // git::stage_all(repo).expect("Error staging all files");
 
                 // Get all files that have at least on Match
-                let files: Vec<structs::Page> = dir
-                    .pages
+                dir.pages
                     .clone()
                     .into_iter()
                     .filter(|p| !p.matches.is_empty())
-                    .collect();
+                    .for_each(|p| {
+                        // Check if file has at least on replace pattern
+                        if p.matches.into_iter().any(|m| m.replace.is_some()) {
+                            // Get file path relative to repository root
+                            let file_repo_path = p
+                                .relative_path
+                                .strip_prefix(&dir.relative_path)
+                                .expect("Error stripping Path prefix");
 
-                files.into_iter().for_each(|p| {
-                    // Check if file has at least on replace pattern
-                    if p.matches.into_iter().any(|m| m.replace.is_some()) {
-                        // Get file path relative to repository root
-                        let file_repo_path = p
-                            .relative_path
-                            .strip_prefix(&dir.relative_path)
-                            .expect("Error stripping Path prefix");
-
-                        // Check if in dry run mode
-                        if !self.dry_run {
-                            match git::stage_file(repo, file_repo_path) {
-                                Ok(_) => {
-                                    println!("Staged '{}'", file_repo_path.display());
-                                }
-                                Err(_) => {
-                                    println!("Error staging '{}'", file_repo_path.display());
+                            // Check if in dry run mode
+                            if self.dry_run {
+                                println!("Would have staged '{}'", file_repo_path.display());
+                            } else {
+                                match git::stage_file(repo, file_repo_path) {
+                                    Ok(_) => {
+                                        println!("Staged '{}'", file_repo_path.display());
+                                    }
+                                    Err(_) => {
+                                        println!("Error staging '{}'", file_repo_path.display());
+                                    }
                                 }
                             }
-                        } else {
-                            println!("Would have staged '{}'", file_repo_path.display());
                         }
-                    }
-                });
+                    });
             } else {
                 println!(
                     "Skipping, {} is not a git repository",
@@ -276,9 +279,6 @@ impl RepoRaider {
                 // If page has at least one Match that was has Some replace string, commit file
                 if do_commit && !self.dry_run {
                     git::commit(repo, msg).expect("Error committing changes");
-                // } else if !do_commit {
-                //     println!("    No changes to commit");
-                // } else {
                 } else if do_commit {
                     println!("    Would have committed {}", dir.relative_path.display());
                 };
@@ -292,18 +292,18 @@ impl RepoRaider {
     }
 
     /// Push changes to remote
-    pub fn push(&self, _username: String, _password: String) {
+    pub fn remote_push(&self, _username: String, _password: String) {
         self.dirs.iter().for_each(|dir| {
             let repo = dir.repo.as_ref().expect("Error unwrapping repo");
 
-            if !self.dry_run {
-                println!("Pushing {} to remote", dir.relative_path.display());
-                git::push(repo).expect("Error pushing repository");
-            } else {
+            if self.dry_run {
                 println!(
                     "Would have pushed {} to remote",
                     dir.relative_path.display()
                 );
+            } else {
+                println!("Pushing {} to remote", dir.relative_path.display());
+                git::push(repo).expect("Error pushing repository");
             }
         });
     }

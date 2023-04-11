@@ -26,12 +26,15 @@ fn main() {
     }
 
     // Create replace patterns for each pattern
-    if let Some(line_select_pattern) = conf.line_select_pattern {
-        if let Some(line_replace_pattern) = conf.line_replace_pattern {
-            raider.replace(line_select_pattern.as_str(), line_replace_pattern.as_str());
-        } else {
-            panic!("ERROR: No replace flag specified");
-        }
+    if let Some(select) = conf.line_select_pattern {
+        conf.line_replace_pattern.map_or_else(
+            || {
+                panic!("ERROR: No replace flag specified");
+            },
+            |replace| {
+                raider.replace(select.as_str(), replace.as_str());
+            },
+        );
     }
 
     // Apply replace patterns to files
@@ -46,8 +49,11 @@ fn main() {
 
         // If push flag is set, push to remote
         if conf.push && conf.username.is_some() && conf.password.is_some() {
-            raider.push(conf.username.unwrap(), conf.password.unwrap());
-        } 
+            raider.remote_push(
+                conf.username.expect("Error unwrapping username"),
+                conf.password.expect("Error unwrapping password"),
+            );
+        }
         // If username or password was not set then throw an error
         else if conf.push {
             panic!("ERROR: Git username and password must be specified for push");
@@ -77,11 +83,14 @@ fn results(raider: &RepoRaider) {
             .filter(|m| m.replace.is_some())
             .for_each(|m| {
                 println!("  O {:<3} {}", m.line, m.content);
-                if let Some(r) = m.replace.as_ref() {
-                    println!("  R {:<3} {}", m.line, r);
-                } else {
-                    println!("  R None");
-                }
+                m.replace.as_ref().map_or_else(
+                    || {
+                        println!("  R None");
+                    },
+                    |r| {
+                        println!("  R {:<3} {}", m.line, r);
+                    },
+                );
             });
     });
 }
