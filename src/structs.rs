@@ -8,8 +8,8 @@ use git2::Repository;
 pub struct Directory {
     pub path: PathBuf,
     pub repo: Option<Repository>,
-    pub pages: Vec<Page>,
     pub relative_path: PathBuf,
+    pub pages: Vec<Page>,
 }
 
 /// Page struct
@@ -17,8 +17,9 @@ pub struct Directory {
 #[derive(Clone, Debug)]
 pub struct Page {
     pub path: PathBuf,
-    pub matches: Vec<Match>,
     pub relative_path: PathBuf,
+    pub changes: bool,
+    pub matches: Vec<Match>,
     // pub dir: Rc<Directory>,
 }
 
