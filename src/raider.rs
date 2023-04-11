@@ -292,7 +292,7 @@ impl RepoRaider {
     }
 
     /// Push changes to remote
-    pub fn push(&self) {
+    pub fn push(&self, _username: String, _password: String) {
         self.dirs.iter().for_each(|dir| {
             let repo = dir.repo.as_ref().expect("Error unwrapping repo");
 

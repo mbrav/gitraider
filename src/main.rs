@@ -30,11 +30,11 @@ fn main() {
         if let Some(line_replace_pattern) = conf.line_replace_pattern {
             raider.replace(line_select_pattern.as_str(), line_replace_pattern.as_str());
         } else {
-            println!("WARNING: No replace flag specified");
+            panic!("ERROR: No replace flag specified");
         }
     }
 
-    // Apply replace patterns
+    // Apply replace patterns to files
     raider.apply();
 
     // Stage matches
@@ -45,13 +45,17 @@ fn main() {
         raider.commit(commit_message.as_str());
 
         // If push flag is set, push to remote
-        if conf.push {
-            raider.push();
+        if conf.push && conf.username.is_some() && conf.password.is_some() {
+            raider.push(conf.username.unwrap(), conf.password.unwrap());
+        } 
+        // If username or password was not set then throw an error
+        else if conf.push {
+            panic!("ERROR: Git username and password must be specified for push");
         }
     }
 
-    // Print results for found directories, Pages and matches
-    if conf.display_results {
+    // Print assessment for found Directories, Pages and Matches
+    if conf.assess {
         results(&raider);
     }
 

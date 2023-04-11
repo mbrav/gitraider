@@ -6,8 +6,8 @@ use clap::{ArgAction, Parser};
 pub struct Config {
     /// Path to repositories
     #[arg(
-        long,
-        short,
+        short = 'p',
+        long = "path",
         value_name = "PATH",
         default_value = "../repos",
         env = "REPO_PATH"
@@ -58,11 +58,19 @@ pub struct Config {
     #[arg(long = "push", action=ArgAction::SetTrue, env = "PUSH_CHANGES")]
     pub push: bool,
 
+    /// Specify git username for push
+    #[arg(long = "username", value_name = "TXT", env = "GIT_USER")]
+    pub username: Option<String>,
+
+    /// Specify git username password for push
+    #[arg(long = "password", value_name = "TXT", env = "GIT_PASSWORD")]
+    pub password: Option<String>,
+
     /// Run program in dry mode without altering files and writing to git history
     #[arg(long = "dry", action=ArgAction::SetTrue, env = "DRY_RUN")]
     pub dry_run: bool,
 
-    /// Display results at the end of program execution
-    #[arg(short = 'd', long = "display", action=ArgAction::SetTrue, env = "DISPLAY_RES")]
-    pub display_results: bool,
+    /// Display assessment at the end of program execution
+    #[arg(short = 'a', long = "assess", action=ArgAction::SetTrue, env = "DISPLAY_ASSESS")]
+    pub assess: bool,
 }
