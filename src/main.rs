@@ -72,25 +72,25 @@ fn main() {
 fn results(raider: &RepoRaider) {
     // git_raider::func::paths_info_print(&raider.get_dirs(), "found directories (repos)", 5);
     println!("REPORT");
-    println!("M n - Matched files, number of matched lines");
-    println!("  O n - Original line, line number");
-    println!("  R n - Replaced line, line number");
-    println!("FILES:");
-    raider.get_pages().iter().for_each(|p| {
-        println!("M {}: {}", p.matches.len(), p.relative_path.display());
-        p.matches
-            .iter()
-            .filter(|m| m.replace.is_some())
-            .for_each(|m| {
-                println!("  O {:<3} {}", m.line, m.content);
-                m.replace.as_ref().map_or_else(
-                    || {
-                        println!("  R None");
-                    },
-                    |r| {
-                        println!("  R {:<3} {}", m.line, r);
-                    },
-                );
+    println!("Fn: - Matched files, number of matched lines");
+    println!("  Ln: - Original line, line number");
+    println!("  Rn: - Replace line (if present), line number");
+    // println!("  Rn: - Replaced line, line number");
+    println!("PROJECTS");
+    for dir in &raider.dirs {
+        if dir.pages.iter().any(|p| p.matches.len() > 0) {
+            println!("Project: {}", dir.relative_path.display());
+            dir.pages.iter().for_each(|p| {
+                println!("  F{}: {}", p.matches.len(), p.relative_path.display());
+                // Loop through matches
+                p.matches.iter().for_each(|m| {
+                    println!("    L{}: {}", m.line, m.content);
+                    // Print replace line if Some
+                    if let Some(r) = &m.replace {
+                        println!("    R{}: {}", m.line, r);
+                    }
+                });
             });
-    });
+        }
+    }
 }

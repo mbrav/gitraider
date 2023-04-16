@@ -84,15 +84,16 @@ Repo mbrav/test-repo
     Staged 'values.yaml'
     Success commit 'Change bootstrap server url from prod-kafka to dev-kafka' d93cb354791ccb4a540b767c70ea480d4cbd580a
 REPORT                                                                                               
-M n - Matched files, number of matched lines                                                                           
-  O n - Original line, line number                                                                                     
-  R n - Replaced line, line number 
-Found pages:
-M 2: mbrav/test-repo/values.yaml
-  O 1   kafka_bootstrapservers: "prod-kafka.backend:9092"
-  R 1   kafka_bootstrapservers: "test-kafka.backend:9092"
-  O 4   kafka_url: prod-kafka.backend:9092
-  R 4   kafka_url: test-kafka.backend:9092
+Fn - Matched file with number of matched lines                                                                           
+  On - Original line, line number                                                                                     
+  Rn - Replace line (if present), line number 
+PROJECTS
+Project: mbrav/test-repo
+  F2: mbrav/test-repo/values.yaml
+    F1:   kafka_bootstrapservers: "prod-kafka.backend:9092"
+    R1:   kafka_bootstrapservers: "test-kafka.backend:9092"
+    F4:   kafka_url: prod-kafka.backend:9092
+    R4:   kafka_url: test-kafka.backend:9092
 Elapsed: 39.170ms
 ```
 
