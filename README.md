@@ -109,4 +109,5 @@ For base functionality to be completed, the following must still be finished:
   - libgit2/libgit2#5640
   - libgit2/libgit2#4338
 - [ ] Add undo mechanics based on already done changes to avoid deleting and recreating all repositories after each unsuccessful run;
+- [ ] Print current branch name is results assesment as well as commit info, etc
 - [ ] Add optional pull from remote before a commit to branch;
