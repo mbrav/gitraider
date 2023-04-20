@@ -78,12 +78,12 @@ fn assessment(raider: &RepoRaider) {
     // println!("  Rn: - Replaced line, line number");
     println!("GIT REPOSITORIES");
     for dir in &raider.dirs {
-        if dir.pages.iter().any(|p| p.matches.len() > 0) {
+        if dir.pages.iter().any(|p| !p.matches.is_empty()) {
             let branch_name =
                 git_raider::git::get_branch_name(dir.repo.as_ref().expect("Folder not a git repo"))
                     .expect("Error getting repo branch name");
             println!("\nRepository: {}", dir.relative_path.display());
-            println!("Branch: {}", branch_name);
+            println!("Branch: {branch_name}");
             dir.pages.iter().for_each(|p| {
                 println!("  F{}: {}", p.matches.len(), p.relative_path.display());
                 // Loop through matches
