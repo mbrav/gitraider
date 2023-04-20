@@ -24,7 +24,7 @@ gitraider -V
 If successful, you will get the following after the end:
 
 ```text
-git_raider 0.1.6
+git_raider 0.1.7
 ```
 
 ## Run from source
