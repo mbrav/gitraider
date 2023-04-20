@@ -80,15 +80,17 @@ After running the command with the `-d` flag we get the following report:
 ```text
 Repo mbrav/test-repo
   Checking out development
-    Success checking out branch 'development' 0290ec568bbd541420454e64b5a7dda6a9642554
-    Staged 'values.yaml'
-    Success commit 'Change bootstrap server url from prod-kafka to dev-kafka' d93cb354791ccb4a540b767c70ea480d4cbd580a
+  Success checking out branch 'development' 0290ec568bbd541420454e64b5a7dda6a9642554
+  Staged 'values.yaml'
+  Success commit 'Change bootstrap server url from prod-kafka to dev-kafka' d93cb354791ccb4a540b767c70ea480d4cbd580a
 REPORT                                                                                               
 Fn - Matched file with number of matched lines                                                                           
   On - Original line, line number                                                                                     
   Rn - Replace line (if present), line number 
-PROJECTS
-Project: mbrav/test-repo
+GIT REPOSITORIES
+
+Repository: mbrav/test-repo
+Branch: development
   F2: mbrav/test-repo/values.yaml
     F1:   kafka_bootstrapservers: "prod-kafka.backend:9092"
     R1:   kafka_bootstrapservers: "test-kafka.backend:9092"

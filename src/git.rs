@@ -24,6 +24,18 @@ pub fn get_ref<'a>(branch: &'a Branch) -> &'a str {
     refname
 }
 
+/// Get current branch name for a repository
+pub fn get_branch_name(repo: &Repository) -> Result<String, git2::Error> {
+    let head = repo.head()?;
+    let branch_name = head
+        .name()
+        .ok_or_else(|| git2::Error::from_str("Invalid HEAD"))?;
+    let branch_name = branch_name
+        .strip_prefix("refs/heads/")
+        .unwrap_or(branch_name);
+    Ok(branch_name.to_string())
+}
+
 /// Checkout a branch in a repo using Branch struct
 pub fn checkout_branch(repo: &Repository, branch: &Branch) -> Result<Oid, git2::Error> {
     let refname = get_ref(branch);

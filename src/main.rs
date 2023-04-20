@@ -62,24 +62,28 @@ fn main() {
 
     // Print assessment for found Directories, Pages and Matches
     if conf.assess {
-        results(&raider);
+        assessment(&raider);
     }
 
     println!("Elapsed: {:.3?}", start.elapsed());
 }
 
-/// Print results
-fn results(raider: &RepoRaider) {
+/// Print assessment
+fn assessment(raider: &RepoRaider) {
     // git_raider::func::paths_info_print(&raider.get_dirs(), "found directories (repos)", 5);
     println!("REPORT");
     println!("Fn: - Matched files, number of matched lines");
     println!("  Ln: - Original line, line number");
     println!("  Rn: - Replace line (if present), line number");
     // println!("  Rn: - Replaced line, line number");
-    println!("PROJECTS");
+    println!("GIT REPOSITORIES");
     for dir in &raider.dirs {
         if dir.pages.iter().any(|p| p.matches.len() > 0) {
-            println!("Project: {}", dir.relative_path.display());
+            let branch_name =
+                git_raider::git::get_branch_name(dir.repo.as_ref().expect("Folder not a git repo"))
+                    .expect("Error getting repo branch name");
+            println!("\nRepository: {}", dir.relative_path.display());
+            println!("Branch: {}", branch_name);
             dir.pages.iter().for_each(|p| {
                 println!("  F{}: {}", p.matches.len(), p.relative_path.display());
                 // Loop through matches
