@@ -16,6 +16,9 @@ ref_debug = []
 [profile.dev]
 opt-level = 1
 
+# Sometimes faster, sometimes slower
+# parallel-compiler = true
+
 # Build optimizations: https://github.com/johnthagen/min-sized-rust
 [profile.release]
 panic = "abort"

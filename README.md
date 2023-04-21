@@ -85,16 +85,16 @@ Repo mbrav/test-repo
   Success commit 'Change bootstrap server url from prod-kafka to dev-kafka' d93cb354791ccb4a540b767c70ea480d4cbd580a
 REPORT                                                                                               
 Fn - Matched file with number of matched lines                                                                           
-  On - Original line, line number                                                                                     
+  Ln - Original line, line number                                                                                     
   Rn - Replace line (if present), line number 
 GIT REPOSITORIES
 
 Repository: mbrav/test-repo
 Branch: development
   F2: mbrav/test-repo/values.yaml
-    F1:   kafka_bootstrapservers: "prod-kafka.backend:9092"
+    L1:   kafka_bootstrapservers: "prod-kafka.backend:9092"
     R1:   kafka_bootstrapservers: "test-kafka.backend:9092"
-    F4:   kafka_url: prod-kafka.backend:9092
+    L4:   kafka_url: prod-kafka.backend:9092
     R4:   kafka_url: test-kafka.backend:9092
 Elapsed: 39.170ms
 ```

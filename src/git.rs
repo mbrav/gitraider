@@ -1,4 +1,6 @@
-use git2::{Branch, BranchType, Branches, Commit, Oid, PushOptions, RemoteCallbacks, Repository};
+use git2::{
+    Branch, BranchType, Branches, Commit, Cred, Oid, PushOptions, RemoteCallbacks, Repository,
+};
 use std::path::{Path, PathBuf};
 
 /// Get repo from path
@@ -115,17 +117,31 @@ pub fn commit(repo: &mut Repository, msg: &str) -> Result<(), git2::Error> {
 }
 
 /// Push changes to remote
-pub fn push(repo: &Repository) -> Result<(), git2::Error> {
+pub fn push(repo: &Repository, username: &str) -> Result<(), git2::Error> {
     // Setup remote
     let mut opts = PushOptions::default();
-    let callbacks = RemoteCallbacks::new();
+    let mut callbacks = RemoteCallbacks::new();
+
+    // Configure authentication credentials
+    callbacks.credentials(|_url, username_from_url, _allowed_types| {
+        Cred::ssh_key_from_agent(username_from_url.unwrap_or(username))
+    });
+
+    // Set the callbacks for the remote
     opts.remote_callbacks(callbacks);
 
     // Assume the remote's name is "origin"
     let mut remote = repo.find_remote("origin")?;
 
-    // Push to remote
-    remote.push::<&str>(&[], Some(&mut opts))?;
+    // Push changes of the current checkout branch
+    let current_branch = get_branch_name(repo).expect("Error getting branch");
+    let refspec = format!(
+        "refs/heads/{}:refs/heads/{}",
+        current_branch, current_branch
+    );
+
+    // Push changes based on settings
+    remote.push(&[refspec], Some(&mut opts))?;
 
     Ok(())
 }

@@ -48,15 +48,12 @@ fn main() {
         raider.commit(commit_message.as_str());
 
         // If push flag is set, push to remote
-        if conf.push && conf.username.is_some() && conf.password.is_some() {
-            raider.remote_push(
-                conf.username.expect("Error unwrapping username"),
-                conf.password.expect("Error unwrapping password"),
-            );
+        if conf.push && conf.username.is_some() {
+            raider.remote_push(conf.username.expect("Error unwrapping username").as_str());
         }
         // If username or password was not set then throw an error
         else if conf.push {
-            panic!("ERROR: Git username and password must be specified for push");
+            panic!("ERROR: Git username must be specified for push");
         }
     }
 

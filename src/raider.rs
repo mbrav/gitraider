@@ -288,7 +288,7 @@ impl RepoRaider {
     }
 
     /// Push changes to remote
-    pub fn remote_push(&self, _username: String, _password: String) {
+    pub fn remote_push(&self, username: &str) {
         self.dirs.iter().for_each(|dir| {
             let repo = dir.repo.as_ref().expect("Error unwrapping repo");
 
@@ -299,7 +299,7 @@ impl RepoRaider {
                 );
             } else {
                 println!("Pushing {} to remote", dir.relative_path.display());
-                git::push(repo).expect("Error pushing repository");
+                git::push(repo, username).expect("Error pushing repository");
             }
         });
     }
