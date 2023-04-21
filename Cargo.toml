@@ -1,11 +1,11 @@
 [package]
-name = "git_raider"
-version = "0.1.7"
+name = "gitraider"
+version = "0.1.8"
 description = "Mass git repository search, replace and commit tool"
 authors = ["mbrav <mbrav@protonmail.com>"]
 edition = "2021"
-repository = "https://github.com/mbrav/git_raider/"
-homepage = "https://github.com/mbrav/git_raider/"
+repository = "https://github.com/mbrav/gitraider/"
+homepage = "https://github.com/mbrav/gitraider/"
 license-file = "LICENSE"
 keywords = ["git", "rust", "cli", "libgit2", "commit", "command-line-tool"]
 categories = ["command-line-utilities"]

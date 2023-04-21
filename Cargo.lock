@@ -175,8 +175,8 @@ dependencies = [
 ]
 
 [[package]]
-name = "git_raider"
-version = "0.1.7"
+name = "gitraider"
+version = "0.1.8"
 dependencies = [
  "clap",
  "git2",

@@ -1,8 +1,8 @@
-[![Release](https://github.com/mbrav/git_raider/actions/workflows/release.yml/badge.svg)](https://github.com/mbrav/git_raider/actions/workflows/release.yml)
+[![Release](https://github.com/mbrav/gitraider/actions/workflows/release.yml/badge.svg)](https://github.com/mbrav/gitraider/actions/workflows/release.yml)
 [![License](https://img.shields.io/badge/License-BSD_3--Clause-yellow.svg)](https://opensource.org/licenses/BSD-3-Clause)
-[![tokei](https://tokei.rs/b1/github/mbrav/git_raider?category=lines)](https://tokei.rs/b1/github/mbrav/git_raider)
+[![tokei](https://tokei.rs/b1/github/mbrav/gitraider?category=lines)](https://tokei.rs/b1/github/mbrav/gitraider)
 
-# git_raider
+# gitraider
 
 Mass git repository search, replace and commit tool written in Rust
 
@@ -13,9 +13,9 @@ Mass git repository search, replace and commit tool written in Rust
 To install the latest version of the binary to `/usr/local/bin/` copy the following into your terminal:
 
 ```bash
-latest_ver=$(curl https://raw.githubusercontent.com/mbrav/git_raider/main/latest)
+latest_ver=$(curl https://raw.githubusercontent.com/mbrav/gitraider/main/latest)
 file_name=gitraider_$latest_ver-stable-x86_64-unknown-linux-gnu.tar.gz
-curl -L -o /tmp/$file_name https://github.com/mbrav/git_raider/releases/download/$latest_ver/$file_name
+curl -L -o /tmp/$file_name https://github.com/mbrav/gitraider/releases/download/$latest_ver/$file_name
 tar -xvf /tmp/$file_name -C /tmp/
 sudo cp /tmp/target/release/gitraider /usr/local/bin/
 gitraider -V 
@@ -24,7 +24,7 @@ gitraider -V
 If successful, you will get the following after the end:
 
 ```text
-git_raider 0.1.7
+gitraider 0.1.8
 ```
 
 ## Run from source

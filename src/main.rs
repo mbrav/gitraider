@@ -1,8 +1,8 @@
 use std::time::Instant;
 
 use clap::Parser;
-use git_raider::config::Config;
-use git_raider::raider::RepoRaider;
+use gitraider::config::Config;
+use gitraider::raider::RepoRaider;
 
 fn main() {
     let conf = Config::parse();
@@ -67,7 +67,7 @@ fn main() {
 
 /// Print assessment
 fn assessment(raider: &RepoRaider) {
-    // git_raider::func::paths_info_print(&raider.get_dirs(), "found directories (repos)", 5);
+    // gitraider::func::paths_info_print(&raider.get_dirs(), "found directories (repos)", 5);
     println!("REPORT");
     println!("Fn: - Matched files, number of matched lines");
     println!("  Ln: - Original line, line number");
@@ -77,7 +77,7 @@ fn assessment(raider: &RepoRaider) {
     for dir in &raider.dirs {
         if dir.pages.iter().any(|p| !p.matches.is_empty()) {
             let branch_name =
-                git_raider::git::get_branch_name(dir.repo.as_ref().expect("Folder not a git repo"))
+                gitraider::git::get_branch_name(dir.repo.as_ref().expect("Folder not a git repo"))
                     .expect("Error getting repo branch name");
             println!("\nRepository: {}", dir.relative_path.display());
             println!("Branch: {branch_name}");
