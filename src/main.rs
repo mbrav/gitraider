@@ -72,7 +72,6 @@ fn assessment(raider: &RepoRaider) {
     println!("Fn: - Matched files, number of matched lines");
     println!("  Ln: - Original line, line number");
     println!("  Rn: - Replace line (if present), line number");
-    // println!("  Rn: - Replaced line, line number");
     println!("GIT REPOSITORIES");
     for dir in &raider.dirs {
         if dir.pages.iter().any(|p| !p.matches.is_empty()) {
