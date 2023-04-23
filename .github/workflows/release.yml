@@ -1,17 +1,14 @@
 name: Release
-
 on:
   push:
     tags:
       - "*"
-
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-
       - name: Cache Build
         id: cache-build
         uses: actions/cache@v3
@@ -23,30 +20,24 @@ jobs:
             ~/.cargo/git/db/
             target/
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
-
       - name: Cargo Test
         run: |
           cargo test
-
       # - name: Cargo Clippy
       #   run: |
       #     cargo clippy -- -W clippy::pedantic -W clippy::nursery -W clippy::unwrap_used
-
       - name: Cargo Build Binary
         run: |
           cargo build --release
-          chmod +x target/release/gitraider
-
+          chmod +x target/release/${{ github.event.repository.name }}
       - name: Optimize Binary with UPX
         run: |
-          upx --best --lzma target/release/gitraider
-
+          upx --best --lzma target/release/${{ github.event.repository.name }}
       - name: Package Binary
         run: |
           toolchain=$(rustup toolchain list | awk '{print $1;}')
-          tar_name="gitraider_${{ github.ref_name }}-$toolchain"
-          tar -cvzf target/release/$tar_name.tar.gz target/release/gitraider
-
+          tar_name="${{ github.event.repository.name }}_${{ github.ref_name }}-$toolchain"
+          tar -cvzf target/release/$tar_name.tar.gz target/release/${{ github.event.repository.name }}
       - name: Release
         uses: docker://antonyurchenko/git-release:v5
         env:

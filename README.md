@@ -1,6 +1,7 @@
 [![Release](https://github.com/mbrav/gitraider/actions/workflows/release.yml/badge.svg)](https://github.com/mbrav/gitraider/actions/workflows/release.yml)
 [![License](https://img.shields.io/badge/License-BSD_3--Clause-yellow.svg)](https://opensource.org/licenses/BSD-3-Clause)
 [![tokei](https://tokei.rs/b1/github/mbrav/gitraider?category=lines)](https://tokei.rs/b1/github/mbrav/gitraider)
+[![Hits-of-Code](https://hitsofcode.com/github/mbrav/gitraider?branch=main)](https://hitsofcode.com/github/mbrav/gitraider/view?branch=main)
 
 # gitraider
 
